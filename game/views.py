@@ -10,7 +10,7 @@ from game.serializers.user_serializer import UserSerializer
 from game.serializers.estado_serializer import EstadoJugadorSerializer
 
 
-#  Crear usuario
+# Crear usuario
 @api_view(['POST'])
 def crear_usuario(request):
     serializer = UserSerializer(data=request.data)
@@ -23,7 +23,7 @@ def crear_usuario(request):
     return Response(serializer.errors)
 
 
-#  Consultar estado
+# Consultar estado
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def obtener_estado(request):
@@ -32,12 +32,13 @@ def obtener_estado(request):
     return Response(serializer.data)
 
 
-#  Ejecutar acción
+# Ejecutar acción
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def ejecutar_accion(request):
     user = request.user
     accion_id = request.data.get('accion_id')
+
     accion = get_object_or_404(Accion, id=accion_id)
     estado = EstadoJugador.objects.get(usuario=user)
 
@@ -47,6 +48,10 @@ def ejecutar_accion(request):
     estado.temperatura += accion.impacto_temperatura + random_temp
     estado.energia += accion.impacto_energia + random_energy
 
+    # 👉 sumar tiempo
+    estado.tiempo_supervivencia += 1
+
+    # limitar valores
     estado.temperatura = max(0, min(100, estado.temperatura))
     estado.energia = max(0, min(100, estado.energia))
 
@@ -55,27 +60,30 @@ def ejecutar_accion(request):
     if estado.temperatura <= 0 or estado.energia <= 0:
         return Response({
             "mensaje": "Has perdido",
-            "estado": "game over"
+            "estado": "game over",
+            "temperatura": estado.temperatura,
+            "energia": estado.energia
         })
 
     return Response({
         "mensaje": "Acción ejecutada",
         "temperatura": estado.temperatura,
-        "energia": estado.energia
+        "energia": estado.energia,
+        "tiempo": estado.tiempo_supervivencia
     })
 
 
-#  Ranking
+# Ranking
 @api_view(['GET'])
 def ranking(request):
-    estados = EstadoJugador.objects.all().order_by('-tiempo_supervivencia')[:10]
+    estados = EstadoJugador.objects.all().order_by('-tiempo_supervivencia')
 
-    data = [
-        {
-            "usuario": e.usuario.username,
-            "tiempo": e.tiempo_supervivencia
-        }
-        for e in estados
-    ]
+    data = []
+
+    for estado in estados:
+        data.append({
+            "usuario": estado.usuario.username,
+            "tiempo": estado.tiempo_supervivencia
+        })
 
     return Response(data)
