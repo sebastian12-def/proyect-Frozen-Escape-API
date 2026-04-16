@@ -1,44 +1,91 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Frozen Escape ❄️</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #0f172a;
-            color: white;
-            text-align: center;
-        }
+<meta charset="UTF-8">
+<title>Frozen Escape ❄️</title>
 
-        .container {
-            width: 300px;
-            margin: auto;
-        }
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    margin: 0;
+}
 
-        input, button {
-            width: 100%;
-            margin: 5px 0;
-            padding: 10px;
-        }
+h1 {
+    text-align: center;
+    margin: 20px;
+}
 
-        button {
-            background: #38bdf8;
-            border: none;
-            cursor: pointer;
-        }
+/* CONTENEDOR GENERAL */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
 
-        button:hover {
-            background: #0284c7;
-        }
+/* TARJETAS */
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    width: 320px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    transition: transform 0.2s;
+}
 
-        .card {
-            background: #1e293b;
-            padding: 15px;
-            margin-top: 10px;
-        }
-    </style>
+.card:hover {
+    transform: scale(1.03);
+}
+
+.card h3 {
+    text-align: center;
+}
+
+/* INPUTS */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 6px;
+    border: none;
+}
+
+/* BOTONES */
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 6px;
+    background: #38bdf8;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #0ea5e9;
+}
+
+/* ACCIONES */
+.actions button {
+    margin-bottom: 5px;
+}
+
+/* JSON OUTPUT */
+pre {
+    background: #0f172a;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    overflow-x: auto;
+}
+</style>
+
 </head>
+
 <body>
 
 <h1>❄️ Frozen Escape</h1>
@@ -47,38 +94,40 @@
 
     <!-- REGISTRO -->
     <div class="card">
-        <h3>Registro</h3>
+        <h3>📝 Registro</h3>
         <input id="regUser" placeholder="Usuario">
         <input id="regPass" type="password" placeholder="Contraseña">
-        <button onclick="register()">Registrarse</button>
+        <button onclick="register()">Crear cuenta</button>
     </div>
 
     <!-- LOGIN -->
     <div class="card">
-        <h3>Login</h3>
+        <h3>🔐 Login</h3>
         <input id="logUser" placeholder="Usuario">
         <input id="logPass" type="password" placeholder="Contraseña">
-        <button onclick="login()">Login</button>
+        <button onclick="login()">Ingresar</button>
     </div>
 
     <!-- ESTADO -->
     <div class="card">
-        <h3>Estado</h3>
-        <button onclick="getEstado()">Ver estado</button>
+        <h3>📊 Estado del jugador</h3>
+        <button onclick="getEstado()">Actualizar estado</button>
         <pre id="estado"></pre>
     </div>
 
     <!-- ACCIONES -->
     <div class="card">
-        <h3>Acciones</h3>
-        <button onclick="accion(1)">Buscar refugio</button>
-        <button onclick="accion(2)">Comer</button>
-        <button onclick="accion(3)">Explorar</button>
+        <h3>🎮 Acciones</h3>
+        <div class="actions">
+            <button onclick="accion(1)">🏠 Buscar refugio</button>
+            <button onclick="accion(2)">🍗 Comer</button>
+            <button onclick="accion(3)">🧭 Explorar</button>
+        </div>
     </div>
 
     <!-- RANKING -->
     <div class="card">
-        <h3>Ranking</h3>
+        <h3>🏆 Ranking</h3>
         <button onclick="getRanking()">Ver ranking</button>
         <pre id="ranking"></pre>
     </div>
@@ -93,52 +142,37 @@ async function register() {
     let username = document.getElementById("regUser").value;
     let password = document.getElementById("regPass").value;
 
-    try {
-        let res = await fetch(API + "usuarios/", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({username, password})
-        });
+    let res = await fetch(API + "usuarios/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
+    });
 
-        let data = await res.json();
-        console.log(data);
-
-        alert("Usuario creado");
-    } catch (error) {
-        console.error(error);
-        alert("Error al registrar");
-    }
+    alert("Usuario creado");
 }
 
-// LOGIN (GUARDA TOKEN)
+// LOGIN
 async function login() {
     let username = document.getElementById("logUser").value;
     let password = document.getElementById("logPass").value;
 
-    try {
-        let res = await fetch(API + "token/", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({username, password})
-        });
+    let res = await fetch(API + "token/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
+    });
 
-        let data = await res.json();
-        console.log(data);
+    let data = await res.json();
 
-        if (data.access) {
-            localStorage.setItem("token", data.access);
-            alert("Login exitoso");
-        } else {
-            alert("Error en login");
-        }
-
-    } catch (error) {
-        console.error(error);
+    if (data.access) {
+        localStorage.setItem("token", data.access);
+        alert("Login exitoso");
+    } else {
         alert("Error en login");
     }
 }
 
-// OBTENER TOKEN
+// TOKEN
 function getToken() {
     return localStorage.getItem("token");
 }
@@ -147,11 +181,6 @@ function getToken() {
 async function getEstado() {
     let token = getToken();
 
-    if (!token) {
-        alert("Debes hacer login primero");
-        return;
-    }
-
     let res = await fetch(API + "estado/", {
         headers: {
             "Authorization": "Bearer " + token
@@ -159,19 +188,12 @@ async function getEstado() {
     });
 
     let data = await res.json();
-    console.log(data);
-
     document.getElementById("estado").innerText = JSON.stringify(data, null, 2);
 }
 
 // ACCIÓN
 async function accion(id) {
     let token = getToken();
-
-    if (!token) {
-        alert("Debes hacer login primero");
-        return;
-    }
 
     let res = await fetch(API + "accion/", {
         method: "POST",
@@ -183,8 +205,6 @@ async function accion(id) {
     });
 
     let data = await res.json();
-    console.log(data);
-
     alert("Acción ejecutada");
 }
 
