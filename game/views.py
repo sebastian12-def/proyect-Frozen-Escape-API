@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 
@@ -23,19 +24,19 @@ def crear_usuario(request):
 
 # 🔹 Consultar estado
 @api_view(['GET'])
-def obtener_estado(request, user_id):
-    estado = EstadoJugador.objects.get(usuario_id=user_id)
+@permission_classes([IsAuthenticated])
+def obtener_estado(request):
+    estado = EstadoJugador.objects.get(usuario=request.user)
     serializer = EstadoJugadorSerializer(estado)
     return Response(serializer.data)
 
 
 # 🔹 Ejecutar acción
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def ejecutar_accion(request):
-    user_id = request.data.get('user_id')
+    user = request.user
     accion_id = request.data.get('accion_id')
-
-    user = User.objects.get(id=user_id)
 
     resultado = ejecutar_accion_juego(user, accion_id)
 
