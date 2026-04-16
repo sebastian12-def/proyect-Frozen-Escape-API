@@ -1,12 +1,13 @@
+import random
+
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.contrib.auth.models import User
 
-from game.models import EstadoJugador
+from game.models import Accion, EstadoJugador
 from game.serializers.user_serializer import UserSerializer
 from game.serializers.estado_serializer import EstadoJugadorSerializer
-from game.services.game_logic import ejecutar_accion_juego
 
 
 #  Crear usuario
@@ -37,10 +38,31 @@ def obtener_estado(request):
 def ejecutar_accion(request):
     user = request.user
     accion_id = request.data.get('accion_id')
+    accion = get_object_or_404(Accion, id=accion_id)
+    estado = EstadoJugador.objects.get(usuario=user)
 
-    resultado = ejecutar_accion_juego(user, accion_id)
+    random_temp = random.randint(-5, 5)
+    random_energy = random.randint(-5, 5)
 
-    return Response(resultado)
+    estado.temperatura += accion.impacto_temperatura + random_temp
+    estado.energia += accion.impacto_energia + random_energy
+
+    estado.temperatura = max(0, min(100, estado.temperatura))
+    estado.energia = max(0, min(100, estado.energia))
+
+    estado.save()
+
+    if estado.temperatura <= 0 or estado.energia <= 0:
+        return Response({
+            "mensaje": "Has perdido",
+            "estado": "game over"
+        })
+
+    return Response({
+        "mensaje": "Acción ejecutada",
+        "temperatura": estado.temperatura,
+        "energia": estado.energia
+    })
 
 
 #  Ranking
