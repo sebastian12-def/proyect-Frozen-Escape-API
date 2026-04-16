@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Frozen Escape ❄️</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            width: 300px;
+            margin: auto;
+        }
+
+        input, button {
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+        }
+
+        button {
+            background: #38bdf8;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0284c7;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>❄️ Frozen Escape</h1>
+
+<div class="container">
+
+    <!-- REGISTRO -->
+    <div class="card">
+        <h3>Registro</h3>
+        <input id="regUser" placeholder="Usuario">
+        <input id="regPass" type="password" placeholder="Contraseña">
+        <button onclick="register()">Registrarse</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="card">
+        <h3>Login</h3>
+        <input id="logUser" placeholder="Usuario">
+        <input id="logPass" type="password" placeholder="Contraseña">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <!-- ESTADO -->
+    <div class="card">
+        <h3>Estado</h3>
+        <button onclick="getEstado()">Ver estado</button>
+        <pre id="estado"></pre>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="card">
+        <h3>Acciones</h3>
+        <button onclick="accion(1)">Buscar refugio</button>
+        <button onclick="accion(2)">Comer</button>
+        <button onclick="accion(3)">Explorar</button>
+    </div>
+
+    <!-- RANKING -->
+    <div class="card">
+        <h3>Ranking</h3>
+        <button onclick="getRanking()">Ver ranking</button>
+        <pre id="ranking"></pre>
+    </div>
+
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000/api/";
+let token = "";
+
+// REGISTRO
+async function register() {
+    let username = document.getElementById("regUser").value;
+    let password = document.getElementById("regPass").value;
+
+    await fetch(API + "usuarios/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
+    });
+
+    alert("Usuario creado");
+}
+
+// LOGIN
+async function login() {
+    let username = document.getElementById("logUser").value;
+    let password = document.getElementById("logPass").value;
+
+    let res = await fetch(API + "token/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
+    });
+
+    let data = await res.json();
+    token = data.access;
+
+    alert("Login exitoso");
+}
+
+// OBTENER ESTADO
+async function getEstado() {
+    let res = await fetch(API + "estado/", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    let data = await res.json();
+    document.getElementById("estado").innerText = JSON.stringify(data, null, 2);
+}
+
+// EJECUTAR ACCIÓN
+async function accion(id) {
+    let res = await fetch(API + "accion/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({accion_id: id})
+    });
+
+    let data = await res.json();
+    alert(data.mensaje);
+}
+
+// RANKING
+async function getRanking() {
+    let res = await fetch(API + "ranking/");
+    let data = await res.json();
+
+    document.getElementById("ranking").innerText = JSON.stringify(data, null, 2);
+}
+</script>
+
+</body>
+</html>
