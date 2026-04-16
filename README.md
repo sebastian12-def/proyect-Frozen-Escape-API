@@ -1,29 +1,32 @@
-# Frozen Escape API ❄️
+# Frozen Escape API
 
 API REST desarrollada con Django REST Framework que simula un juego de supervivencia en condiciones extremas de frío.
 
-## 🎮 Descripción del juego
+## Descripción del juego
+
 El jugador debe gestionar su temperatura y energía para sobrevivir en un entorno congelado.  
 Cada acción afecta su estado y existe un componente aleatorio que puede cambiar el resultado.
 
-## 🧱 Tecnologías
+## Tecnologías
+
 - Python
 - Django
 - Django REST Framework
 - SQLite
 
-## 📊 Modelo de datos
+## Modelo de datos
+
 - Usuario
-- EstadoJugador (relación 1 a 1)
+- EstadoJugador (relación uno a uno)
 - Accion
 
-## 🔗 Endpoints
+## Endpoints
 
 ### Crear usuario
 POST /api/usuarios/
 
 ### Consultar estado
-GET /api/estado/{id}
+GET /api/estado/
 
 ### Ejecutar acción
 POST /api/accion/
@@ -31,9 +34,15 @@ POST /api/accion/
 ### Ranking
 GET /api/ranking/
 
-## ⚙️ Ejecución
+## Autenticación
 
-```bash
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
+El sistema utiliza autenticación basada en JWT.
+
+### Obtener token
+POST /api/token/
+
+```json
+{
+  "username": "usuario",
+  "password": "1234"
+}
