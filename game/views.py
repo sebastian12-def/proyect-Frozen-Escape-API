@@ -9,7 +9,7 @@ from game.serializers.estado_serializer import EstadoJugadorSerializer
 from game.services.game_logic import ejecutar_accion_juego
 
 
-# 🔹 Crear usuario
+#  Crear usuario
 @api_view(['POST'])
 def crear_usuario(request):
     serializer = UserSerializer(data=request.data)
@@ -22,7 +22,7 @@ def crear_usuario(request):
     return Response(serializer.errors)
 
 
-# 🔹 Consultar estado
+#  Consultar estado
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def obtener_estado(request):
@@ -31,7 +31,7 @@ def obtener_estado(request):
     return Response(serializer.data)
 
 
-# 🔹 Ejecutar acción
+#  Ejecutar acción
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def ejecutar_accion(request):
@@ -43,7 +43,7 @@ def ejecutar_accion(request):
     return Response(resultado)
 
 
-# 🔹 Ranking
+#  Ranking
 @api_view(['GET'])
 def ranking(request):
     estados = EstadoJugador.objects.all().order_by('-tiempo_supervivencia')[:10]
