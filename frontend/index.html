@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Frozen Escape</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Frozen Escape</h1>
+    </header>
+
+    <!-- AUTENTICACIÓN -->
+    <section class="grid">
+
+        <div class="card">
+            <h3>Registro</h3>
+            <input id="regUser" placeholder="Usuario">
+            <input id="regPass" type="password" placeholder="Contraseña">
+            <button onclick="register()">Crear cuenta</button>
+        </div>
+
+        <div class="card">
+            <h3>Login</h3>
+            <input id="logUser" placeholder="Usuario">
+            <input id="logPass" type="password" placeholder="Contraseña">
+            <button onclick="login()">Ingresar</button>
+        </div>
+
+    </section>
+
+    <!-- JUEGO -->
+    <section class="grid">
+
+        <div class="card">
+            <h3>Estado del jugador</h3>
+            <button onclick="getEstado()">Actualizar</button>
+            <pre id="estado"></pre>
+        </div>
+
+        <div class="card">
+            <h3>Acciones</h3>
+            <button onclick="accion(1)">Buscar refugio</button>
+            <button onclick="accion(2)">Comer</button>
+            <button onclick="accion(3)">Explorar</button>
+        </div>
+
+    </section>
+
+    <!-- RANKING -->
+    <section class="full">
+        <div class="card">
+            <h3>Ranking</h3>
+            <button onclick="getRanking()">Ver ranking</button>
+            <pre id="ranking"></pre>
+        </div>
+    </section>
+
+</div>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
