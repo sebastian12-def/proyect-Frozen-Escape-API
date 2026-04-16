@@ -2,27 +2,29 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Frozen Escape ❄️</title>
+<title>Frozen Escape</title>
 
 <style>
 body {
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
+    background: linear-gradient(135deg, #0f172a, #020617);
     color: white;
     margin: 0;
 }
 
+/* HEADER */
 h1 {
     text-align: center;
-    margin: 20px;
+    padding: 15px;
 }
 
-/* CONTENEDOR GENERAL */
+/* GRID PRINCIPAL */
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
+    max-width: 900px;
+    margin: auto;
 }
 
 /* TARJETAS */
@@ -30,17 +32,12 @@ h1 {
     background: #1e293b;
     padding: 20px;
     border-radius: 12px;
-    width: 320px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    transition: transform 0.2s;
 }
 
-.card:hover {
-    transform: scale(1.03);
-}
-
-.card h3 {
-    text-align: center;
+/* FULL WIDTH */
+.full {
+    grid-column: span 2;
 }
 
 /* INPUTS */
@@ -62,25 +59,32 @@ button {
     background: #38bdf8;
     color: white;
     cursor: pointer;
-    font-weight: bold;
 }
 
 button:hover {
     background: #0ea5e9;
 }
 
-/* ACCIONES */
-.actions button {
-    margin-bottom: 5px;
+/* BARRAS DE ESTADO */
+.bar {
+    height: 20px;
+    border-radius: 5px;
+    margin-top: 5px;
 }
 
-/* JSON OUTPUT */
+.temp {
+    background: red;
+}
+
+.energy {
+    background: green;
+}
+
+/* JSON */
 pre {
-    background: #0f172a;
+    background: #020617;
     padding: 10px;
     border-radius: 6px;
-    font-size: 12px;
-    overflow-x: auto;
 }
 </style>
 
@@ -88,13 +92,13 @@ pre {
 
 <body>
 
-<h1>❄️ Frozen Escape</h1>
+<h1>Frozen Escape</h1>
 
 <div class="container">
 
     <!-- REGISTRO -->
     <div class="card">
-        <h3>📝 Registro</h3>
+        <h3>Registro</h3>
         <input id="regUser" placeholder="Usuario">
         <input id="regPass" type="password" placeholder="Contraseña">
         <button onclick="register()">Crear cuenta</button>
@@ -102,7 +106,7 @@ pre {
 
     <!-- LOGIN -->
     <div class="card">
-        <h3>🔐 Login</h3>
+        <h3>Login</h3>
         <input id="logUser" placeholder="Usuario">
         <input id="logPass" type="password" placeholder="Contraseña">
         <button onclick="login()">Ingresar</button>
@@ -110,24 +114,24 @@ pre {
 
     <!-- ESTADO -->
     <div class="card">
-        <h3>📊 Estado del jugador</h3>
+        <h3>Estado del jugador</h3>
         <button onclick="getEstado()">Actualizar estado</button>
         <pre id="estado"></pre>
     </div>
 
     <!-- ACCIONES -->
     <div class="card">
-        <h3>🎮 Acciones</h3>
+        <h3>Acciones</h3>
         <div class="actions">
-            <button onclick="accion(1)">🏠 Buscar refugio</button>
-            <button onclick="accion(2)">🍗 Comer</button>
-            <button onclick="accion(3)">🧭 Explorar</button>
+            <button onclick="accion(1)">Buscar refugio</button>
+            <button onclick="accion(2)">Comer</button>
+            <button onclick="accion(3)">Explorar</button>
         </div>
     </div>
 
     <!-- RANKING -->
     <div class="card">
-        <h3>🏆 Ranking</h3>
+        <h3>Ranking</h3>
         <button onclick="getRanking()">Ver ranking</button>
         <pre id="ranking"></pre>
     </div>
